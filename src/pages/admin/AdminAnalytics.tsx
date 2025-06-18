@@ -1,19 +1,16 @@
 
 import AdminLayout from "@/components/admin/AdminLayout";
-import AdminOverview from "@/components/admin/AdminOverview";
-import { AdminMetrics } from "@/components/admin/AdminMetrics";
+import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
-const AdminDashboard = () => {
+const AdminAnalyticsPage = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, hasRole } = useAuth();
 
   useEffect(() => {
-    console.log("AdminDashboard mounted", { user, isAuthenticated });
-    
     if (!isAuthenticated) {
       toast.error("Access Denied", {
         description: "Please log in to access the admin dashboard",
@@ -37,12 +34,9 @@ const AdminDashboard = () => {
 
   return (
     <AdminLayout>
-      <div className="space-y-8">
-        <AdminOverview />
-        <AdminMetrics />
-      </div>
+      <AdminAnalytics />
     </AdminLayout>
   );
 };
 
-export default AdminDashboard;
+export default AdminAnalyticsPage;
