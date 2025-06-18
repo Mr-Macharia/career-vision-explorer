@@ -4,53 +4,55 @@ import { toast } from "@/components/ui/sonner";
 import { AuthState, User } from './auth-types';
 
 export const useImpersonation = (
-  setAuthState: Dispatch<SetStateAction<AuthState>>,
+  setAuthState: Dispatch<SetStateAction<AuthState>>, 
   authState: AuthState
 ) => {
-  const impersonateUser = (targetUser: User) => {
-    if (!authState.user || (authState.user.role !== 'admin' && authState.user.role !== 'subadmin')) {
-      toast.error("Access Denied", {
-        description: "Only admins and subadmins can impersonate users",
-      });
-      return;
-    }
-
-    console.log('Starting impersonation:', { originalUser: authState.user, targetUser });
+  const impersonateUser = (user: User) => {
+    console.log('Starting impersonation:', user);
     
-    const impersonationData = {
-      originalUser: authState.user,
-      impersonatedUser: targetUser
-    };
-    localStorage.setItem('visiondrillImpersonation', JSON.stringify(impersonationData));
+    // Store the original user if not already impersonating
+    const originalUser = authState.isImpersonating ? authState.originalUser : authState.user;
     
+    // Update auth state
     setAuthState(prev => ({
       ...prev,
-      originalUser: authState.user,
-      user: targetUser,
+      originalUser,
+      user,
       isImpersonating: true,
     }));
     
+    // Store impersonation data in localStorage
+    localStorage.setItem('visiondrillImpersonation', JSON.stringify({
+      originalUser,
+      impersonatedUser: user,
+    }));
+    
     toast.success("Impersonation Started", {
-      description: `Now viewing as ${targetUser.name}`,
+      description: `Now viewing as ${user.name}`,
     });
   };
 
   const stopImpersonation = () => {
-    if (!authState.isImpersonating || !authState.originalUser) return;
+    console.log('Stopping impersonation');
     
-    console.log('Stopping impersonation, returning to:', authState.originalUser);
+    if (!authState.isImpersonating || !authState.originalUser) {
+      toast.error("No active impersonation session");
+      return;
+    }
     
-    localStorage.removeItem('visiondrillImpersonation');
-    
+    // Restore original user
     setAuthState(prev => ({
       ...prev,
-      user: authState.originalUser,
+      user: prev.originalUser,
       originalUser: null,
       isImpersonating: false,
     }));
     
+    // Clear impersonation data
+    localStorage.removeItem('visiondrillImpersonation');
+    
     toast.success("Impersonation Stopped", {
-      description: `Returned to your original account`,
+      description: `Returned to ${authState.originalUser.name}`,
     });
   };
 
