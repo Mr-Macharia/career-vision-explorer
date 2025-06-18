@@ -32,8 +32,8 @@ const AdminLogin = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { login, hasRole, isAuthenticated, user } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const { login, hasRole, isAuthenticated, user, isLoading } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginType, setLoginType] = useState<'admin' | 'jobseeker' | 'employer'>('admin');
   
   // Handle returnUrl from query params
@@ -41,20 +41,24 @@ const AdminLogin = () => {
   
   // Check if user is already authenticated and redirect appropriately
   useEffect(() => {
-    if (isAuthenticated && user) {
+    if (!isLoading && isAuthenticated && user) {
       const dashboardUrl = getDashboardForRole(user.role);
-      navigate(dashboardUrl);
+      const targetUrl = returnUrl || dashboardUrl;
+      
+      console.log('User already authenticated, redirecting to:', targetUrl);
+      navigate(targetUrl);
       
       toast.success("Already Logged In", {
-        description: `You're already logged in as ${user.name}`,
+        description: `Welcome back, ${user.name}`,
       });
     }
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, navigate, returnUrl, isLoading]);
   
   // Helper function to get the dashboard URL based on role
   const getDashboardForRole = (role: string) => {
     switch (role) {
       case 'admin':
+      case 'subadmin':
         return '/admin/dashboard';
       case 'employer':
         return '/employer/dashboard';
@@ -88,7 +92,9 @@ const AdminLogin = () => {
   };
   
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-    setIsLoading(true);
+    if (isSubmitting) return;
+    
+    setIsSubmitting(true);
     
     try {
       console.log('Attempting login with:', values.email, 'for role:', loginType);
@@ -99,13 +105,16 @@ const AdminLogin = () => {
           description: `Welcome to the ${loginType} dashboard`,
         });
         
-        // Redirect based on returnUrl or default dashboard
-        if (returnUrl) {
-          navigate(returnUrl);
-        } else {
-          const dashboardUrl = getDashboardForRole(loginType);
-          navigate(dashboardUrl);
-        }
+        // Small delay to let the auth state update
+        setTimeout(() => {
+          // Redirect based on returnUrl or default dashboard
+          if (returnUrl) {
+            navigate(returnUrl);
+          } else {
+            const dashboardUrl = getDashboardForRole(loginType);
+            navigate(dashboardUrl);
+          }
+        }, 100);
       } else {
         toast.error("Login Failed", {
           description: "Invalid email or password. Please check your credentials.",
@@ -117,9 +126,23 @@ const AdminLogin = () => {
         description: "An unexpected error occurred. Please try again.",
       });
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
+
+  // Show loading while checking auth state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  // Don't render login form if already authenticated
+  if (isAuthenticated && user) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
@@ -148,7 +171,7 @@ const AdminLogin = () => {
             <LoginTabs loginType={loginType} setLoginType={setLoginType} />
             <LoginForm 
               onSubmit={onSubmit}
-              isLoading={isLoading}
+              isLoading={isSubmitting}
               loginType={loginType}
               defaultValues={getLoginCredentials()}
             />

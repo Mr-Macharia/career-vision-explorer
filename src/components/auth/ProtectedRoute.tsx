@@ -6,7 +6,7 @@ import { toast } from "@/components/ui/sonner";
 
 interface ProtectedRouteProps {
   children: ReactNode;
-  requiredRole?: "admin" | "jobseeker" | "employer";
+  requiredRole?: "admin" | "jobseeker" | "employer" | "subadmin";
 }
 
 export const ProtectedRoute = ({ 
@@ -24,10 +24,13 @@ export const ProtectedRoute = ({
           description: "Please log in to access this page",
         });
         
-        // Redirect to appropriate login page
+        // Redirect to appropriate login page with return URL
         const loginUrl = location.pathname.startsWith('/admin') ? '/admin/login' : '/login';
         navigate(`${loginUrl}?returnUrl=${encodeURIComponent(location.pathname)}`);
-      } else if (requiredRole && !hasRole(requiredRole)) {
+        return;
+      } 
+      
+      if (requiredRole && !hasRole(requiredRole)) {
         // Role-specific error message
         const roleMessage = `You need ${requiredRole} permissions to access this page`;
         
@@ -42,6 +45,7 @@ export const ProtectedRoute = ({
         } else {
           navigate("/login");
         }
+        return;
       }
     }
   }, [isAuthenticated, hasRole, isLoading, navigate, requiredRole, location.pathname, user]);
@@ -50,6 +54,7 @@ export const ProtectedRoute = ({
   const getDashboardUrl = (role: string) => {
     switch (role) {
       case 'admin':
+      case 'subadmin':
         return '/admin/dashboard';
       case 'employer':
         return '/employer/dashboard';

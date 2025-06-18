@@ -1,10 +1,10 @@
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
-import { authenticateUser, logoutUser, getCurrentUser, createUser } from '@/lib/auth';
 import { toast } from "@/components/ui/sonner";
 import { AuthState, AuthContextType } from './auth-types';
 import { useAuthActions } from './auth-actions';
 import { useImpersonation } from './auth-impersonation';
+import { getCurrentUser } from '@/lib/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -22,33 +22,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // Check for existing user on mount
-    const currentUser = getCurrentUser();
-    console.log('Checking existing user:', currentUser);
-    if (currentUser) {
-      setAuthState(prev => ({
-        ...prev,
-        user: currentUser,
-        isAuthenticated: true,
-      }));
+    const initializeAuth = () => {
+      console.log('Initializing auth state...');
       
-      // Check if there's an impersonation session
-      const impersonationData = localStorage.getItem('visiondrillImpersonation');
-      if (impersonationData) {
-        try {
-          const { originalUser: storedOriginalUser, impersonatedUser } = JSON.parse(impersonationData);
+      try {
+        const currentUser = getCurrentUser();
+        console.log('Current user from storage:', currentUser);
+        
+        if (currentUser) {
           setAuthState(prev => ({
             ...prev,
-            originalUser: storedOriginalUser,
-            user: impersonatedUser,
-            isImpersonating: true,
+            user: currentUser,
+            isAuthenticated: true,
           }));
-          console.log('Restored impersonation session:', { originalUser: storedOriginalUser, impersonatedUser });
-        } catch (e) {
-          localStorage.removeItem('visiondrillImpersonation');
+          
+          // Check if there's an impersonation session
+          const impersonationData = localStorage.getItem('visiondrillImpersonation');
+          if (impersonationData) {
+            try {
+              const { originalUser: storedOriginalUser, impersonatedUser } = JSON.parse(impersonationData);
+              setAuthState(prev => ({
+                ...prev,
+                originalUser: storedOriginalUser,
+                user: impersonatedUser,
+                isImpersonating: true,
+              }));
+              console.log('Restored impersonation session:', { originalUser: storedOriginalUser, impersonatedUser });
+            } catch (e) {
+              console.error('Error parsing impersonation data:', e);
+              localStorage.removeItem('visiondrillImpersonation');
+            }
+          }
         }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+      } finally {
+        setAuthState(prev => ({ ...prev, isLoading: false }));
       }
-    }
-    setAuthState(prev => ({ ...prev, isLoading: false }));
+    };
+
+    initializeAuth();
   }, []);
 
   const hasRole = (role: string): boolean => {
