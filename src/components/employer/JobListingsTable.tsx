@@ -1,6 +1,14 @@
 
 import React, { useState } from "react";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Card,
   CardContent,
   CardDescription,
@@ -32,9 +40,6 @@ import { Eye, Edit, Trash, List, Search, Filter, MapPin, Briefcase, Plus, Trendi
 import { useJobPosts, JobPost } from "@/hooks/use-job-posts";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { JobListingsStats } from "./JobListingsStats";
-import { JobListingsFilters } from "./JobListingsFilters";
-import { JobListingsActions } from "./JobListingsActions";
 
 export function JobListingsTable() {
   const { filteredJobs, removeJob, updateFilters, filters } = useJobPosts();
@@ -80,23 +85,99 @@ export function JobListingsTable() {
   const stats = {
     total: filteredJobs.length,
     boosted: filteredJobs.filter(job => job.isBoosted).length,
-    active: filteredJobs.length,
+    active: filteredJobs.length, // Assuming all are active for employer view
     totalApplicants: filteredJobs.reduce((sum, job) => sum + job.applicants, 0),
     totalViews: filteredJobs.reduce((sum, job) => sum + job.views, 0)
   };
 
   return (
     <div className="space-y-6">
-      <JobListingsStats stats={stats} />
+      {/* Enhanced Header with Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="bg-white p-6 rounded-lg border shadow-sm">
+          <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
+          <div className="text-sm text-gray-600">Total Jobs</div>
+        </div>
+        <div className="bg-white p-6 rounded-lg border shadow-sm">
+          <div className="text-2xl font-bold text-green-600">{stats.boosted}</div>
+          <div className="text-sm text-gray-600">Boosted Jobs</div>
+        </div>
+        <div className="bg-white p-6 rounded-lg border shadow-sm">
+          <div className="text-2xl font-bold text-purple-600">{stats.totalApplicants}</div>
+          <div className="text-sm text-gray-600">Total Applicants</div>
+        </div>
+        <div className="bg-white p-6 rounded-lg border shadow-sm">
+          <div className="text-2xl font-bold text-orange-600">{stats.totalViews}</div>
+          <div className="text-sm text-gray-600">Total Views</div>
+        </div>
+        <div className="bg-white p-6 rounded-lg border shadow-sm">
+          <div className="text-2xl font-bold text-red-600">{stats.totalViews > 0 ? ((stats.totalApplicants / stats.totalViews) * 100).toFixed(1) : 0}%</div>
+          <div className="text-sm text-gray-600">Conversion Rate</div>
+        </div>
+      </div>
 
-      <JobListingsFilters 
-        searchTerm={searchTerm}
-        filters={filters}
-        onSearch={handleSearch}
-        onJobTypeFilter={handleJobTypeFilter}
-        onDateRangeFilter={handleDateRangeFilter}
-        onBoostedFilter={handleBoostedFilter}
-      />
+      {/* Advanced Search and Filters */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Search className="h-5 w-5" />
+            Search & Filter Jobs
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Main Search */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search jobs by title, location, or description..."
+                className="pl-10"
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+            </div>
+            
+            {/* Filter Controls */}
+            <div className="flex gap-3">
+              <Select onValueChange={handleJobTypeFilter} defaultValue="all">
+                <SelectTrigger className="w-40">
+                  <Briefcase className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Job Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="Full-time">Full-time</SelectItem>
+                  <SelectItem value="Part-time">Part-time</SelectItem>
+                  <SelectItem value="Contract">Contract</SelectItem>
+                  <SelectItem value="Internship">Internship</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select onValueChange={handleDateRangeFilter} defaultValue="all">
+                <SelectTrigger className="w-40">
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Date Posted" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Time</SelectItem>
+                  <SelectItem value="7">Last 7 days</SelectItem>
+                  <SelectItem value="30">Last 30 days</SelectItem>
+                  <SelectItem value="90">Last 90 days</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Button 
+                variant={filters.boostedOnly ? "default" : "outline"}
+                onClick={() => handleBoostedFilter(!filters.boostedOnly)}
+                className="flex items-center gap-2"
+              >
+                <TrendingUp className="h-4 w-4" />
+                Boosted Only
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Enhanced Job Listings Table */}
       <Card>
@@ -187,11 +268,32 @@ export function JobListingsTable() {
                       )}
                     </TableCell>
                     <TableCell className="text-right">
-                      <JobListingsActions 
-                        job={job}
-                        onViewApplicants={handleViewApplicants}
-                        onDelete={handleDelete}
-                      />
+                      <div className="flex items-center justify-end gap-2">
+                        <BoostJobDialog job={job} />
+                        <EditJobDialog job={job} />
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <List className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => handleViewApplicants(job.id)}>
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Applicants
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem 
+                              className="text-red-600"
+                              onClick={() => handleDelete(job)}
+                            >
+                              <Trash className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

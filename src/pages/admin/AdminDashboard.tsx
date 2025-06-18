@@ -1,56 +1,50 @@
 
 import AdminLayout from "@/components/admin/AdminLayout";
-import AdminOverview from "@/components/admin/AdminOverview";
 import { AdminMetrics } from "@/components/admin/AdminMetrics";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { user, isAuthenticated, hasRole, isLoading } = useAuth();
+  const { user, isAuthenticated, hasRole } = useAuth();
 
   useEffect(() => {
-    console.log("AdminDashboard - Auth state:", { user, isAuthenticated, hasRole: hasRole("admin"), isLoading });
+    console.log("AdminDashboard mounted", { user, isAuthenticated });
     
-    if (!isLoading) {
-      if (!isAuthenticated) {
-        toast.error("Access Denied", {
-          description: "Please log in to access the admin dashboard",
-        });
-        navigate("/admin/login");
-        return;
-      }
-
-      if (!hasRole("admin") && !hasRole("subadmin")) {
-        toast.error("Access Denied", {
-          description: "You don't have permission to access the admin dashboard",
-        });
-        navigate("/");
-        return;
-      }
+    if (!isAuthenticated) {
+      toast.error("Access Denied", {
+        description: "Please log in to access the admin dashboard",
+      });
+      navigate("/admin/login");
+      return;
     }
-  }, [isAuthenticated, hasRole, navigate, user, isLoading]);
 
-  // Show loading while auth is being checked
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+    if (!hasRole("admin")) {
+      toast.error("Access Denied", {
+        description: "You don't have permission to access the admin dashboard",
+      });
+      navigate("/");
+      return;
+    }
+  }, [isAuthenticated, hasRole, navigate, user]);
 
-  // Don't render dashboard if not authenticated or authorized
-  if (!isAuthenticated || (!hasRole("admin") && !hasRole("subadmin"))) {
+  if (!isAuthenticated || !hasRole("admin")) {
     return null;
   }
 
   return (
     <AdminLayout>
       <div className="space-y-8">
-        <AdminOverview />
+        <div className="text-center lg:text-left">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+            Admin Dashboard
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl">
+            Welcome to the Visiondrill administration panel. Monitor your platform's performance and manage all aspects of your career development ecosystem.
+          </p>
+        </div>
         <AdminMetrics />
       </div>
     </AdminLayout>
