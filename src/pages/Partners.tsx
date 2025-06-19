@@ -5,14 +5,23 @@ import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Building, GraduationCap, UserCheck } from "lucide-react";
+import { usePartners, PartnersProvider } from "@/hooks/use-partners";
 
-const Partners = () => {
+const PartnersShowcase = () => {
+  const { partners, getPartnersByCategory } = usePartners();
+  
+  const employers = getPartnersByCategory("employer");
+  const education = getPartnersByCategory("education");
+  const recruiting = getPartnersByCategory("recruiting");
+
   const partnerCategories = [
     {
       id: 1,
       title: "Employers",
       icon: <Building className="h-10 w-10 text-primary" />,
       description: "Connect with top talent and showcase your company culture",
+      count: employers.length,
+      partners: employers.slice(0, 3),
       features: [
         "AI-powered candidate matching",
         "Branded employer profile",
@@ -25,6 +34,8 @@ const Partners = () => {
       title: "Educational Institutions",
       icon: <GraduationCap className="h-10 w-10 text-primary" />,
       description: "Help your students launch successful careers",
+      count: education.length,
+      partners: education.slice(0, 3),
       features: [
         "Student outcome tracking",
         "Curriculum optimization insights",
@@ -37,6 +48,8 @@ const Partners = () => {
       title: "Recruiting Agencies",
       icon: <UserCheck className="h-10 w-10 text-primary" />,
       description: "Streamline your recruiting process with AI",
+      count: recruiting.length,
+      partners: recruiting.slice(0, 3),
       features: [
         "Candidate database integration",
         "Smart matching algorithms",
@@ -80,7 +93,7 @@ const Partners = () => {
               Partnership Opportunities
             </h2>
             <p className="mt-4 max-w-2xl text-xl text-muted-foreground mx-auto">
-              Join our ecosystem of employers, educators, and recruiting agencies to shape the future of career development
+              Join our ecosystem of {partners.length} partners across employers, educators, and recruiting agencies
             </p>
           </div>
 
@@ -93,7 +106,28 @@ const Partners = () => {
                       {category.icon}
                     </div>
                     <h3 className="text-xl font-bold mb-2 text-foreground">{category.title}</h3>
+                    <p className="text-sm text-primary font-medium mb-2">{category.count} active partners</p>
                     <p className="text-muted-foreground mb-6">{category.description}</p>
+                    
+                    {/* Partner Logos */}
+                    {category.partners.length > 0 && (
+                      <div className="flex gap-2 mb-4 flex-wrap justify-center">
+                        {category.partners.map((partner) => (
+                          <div key={partner.id} className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200">
+                            <img 
+                              src={partner.logo} 
+                              alt={partner.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = `https://images.unsplash.com/photo-1560441347-3a9c2e1e7e5c?auto=format&fit=crop&w=48&h=48`;
+                              }}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
                     <ul className="space-y-2 text-left mb-6 w-full">
                       {category.features.map((feature, index) => (
                         <li key={index} className="flex items-start">
@@ -138,6 +172,14 @@ const Partners = () => {
         </div>
       </section>
     </Layout>
+  );
+};
+
+const Partners = () => {
+  return (
+    <PartnersProvider>
+      <PartnersShowcase />
+    </PartnersProvider>
   );
 };
 
