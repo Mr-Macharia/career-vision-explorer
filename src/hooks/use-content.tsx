@@ -1,34 +1,14 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-
-export interface Content {
-  id: string;
-  title: string;
-  slug: string;
-  type: "hero" | "page" | "post" | "section";
-  status: "published" | "draft" | "archived";
-  content: string;
-  excerpt?: string;
-  location?: string;
-  authorId: string;
-  authorName: string;
-  createdAt: string;
-  updatedAt: string;
-  metadata?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string[];
-    featuredImage?: string;
-  };
-}
+import { Content, ContentType, ContentStatus } from "@/types/content";
 
 interface ContentContextType {
   contents: Content[];
   addContent: (content: Omit<Content, "id" | "createdAt" | "updatedAt">) => void;
   updateContent: (id: string, content: Partial<Content>) => void;
   deleteContent: (id: string) => void;
-  getContentByType: (type: Content["type"]) => Content[];
+  getContentByType: (type: ContentType) => Content[];
   getContentByLocation: (location: string) => Content[];
   isLoading: boolean;
   refreshContent: () => void;
@@ -51,11 +31,6 @@ let globalContentState: Content[] = [
     authorName: "Admin User",
     createdAt: "2024-03-15",
     updatedAt: "2024-03-15",
-    metadata: {
-      metaTitle: "Career Explorer - Find Your Path",
-      metaDescription: "Discover your ideal career path with our comprehensive tools and guidance",
-      keywords: ["career", "jobs", "guidance", "professional development"]
-    }
   },
   {
     id: "2",
@@ -70,17 +45,12 @@ let globalContentState: Content[] = [
     authorName: "Admin User",
     createdAt: "2024-03-10",
     updatedAt: "2024-03-12",
-    metadata: {
-      metaTitle: "About Visiondrill Career Explorer",
-      metaDescription: "Learn about our mission to help individuals find meaningful careers",
-      keywords: ["about", "mission", "career guidance", "company"]
-    }
   },
   {
     id: "3",
     title: "Career Success Stories",
     slug: "success-stories",
-    type: "section",
+    type: "testimonial-section",
     status: "published",
     content: "Discover how professionals have transformed their careers using our platform. From career changers to skill builders, read inspiring stories of growth and success.",
     excerpt: "Collection of user success stories",
@@ -184,7 +154,7 @@ export const ContentProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const getContentByType = (type: Content["type"]) => {
+  const getContentByType = (type: ContentType) => {
     return contents.filter(content => content.type === type);
   };
 
