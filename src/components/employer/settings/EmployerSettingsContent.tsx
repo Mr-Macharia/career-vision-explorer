@@ -1,9 +1,8 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EmployerSettingsHeader } from "./EmployerSettingsHeader";
 import { CompanySettings } from "./CompanySettings";
 import { RecruitmentSettings } from "./RecruitmentSettings";
-import { useEmployerSettings } from "@/hooks/use-employer-settings";
+import { useEmployerSettingsContext } from "@/contexts/EmployerSettingsContext";
 
 export const EmployerSettingsContent = () => {
   const {
@@ -14,7 +13,7 @@ export const EmployerSettingsContent = () => {
     saveAllSettings,
     isLoading,
     hasUnsavedChanges
-  } = useEmployerSettings();
+  } = useEmployerSettingsContext();
 
   return (
     <div className="p-6">

@@ -1,6 +1,6 @@
 
 import DashboardLayout from "@/components/admin/DashboardLayout";
-import { EmployerSettingsProvider } from "@/hooks/use-employer-settings";
+import { EmployerSettingsProvider } from "@/contexts/EmployerSettingsContext";
 import { EmployerSettingsContent } from "@/components/employer/settings/EmployerSettingsContent";
 
 const EmployerSettings = () => {
