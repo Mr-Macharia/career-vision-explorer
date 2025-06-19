@@ -17,9 +17,9 @@ export const EmployerSettingsHeader = ({
   return (
     <div className="flex justify-between items-center mb-6">
       <div className="flex items-center gap-3">
-        <h1 className="text-3xl font-bold">Employer Settings</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Employer Settings</h1>
         {hasUnsavedChanges && (
-          <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
+          <Badge variant="outline" className="bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800">
             Unsaved Changes
           </Badge>
         )}
