@@ -32,10 +32,10 @@ export const RecruitmentSettings = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50">
+      <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-900 dark:text-white">Auto-Screening</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Automatically screen applications based on criteria</p>
+          <p className="text-sm font-medium">Auto-Screening</p>
+          <p className="text-sm text-gray-500">Automatically screen applications based on criteria</p>
         </div>
         <Switch 
           checked={settings.autoScreening} 
@@ -49,10 +49,10 @@ export const RecruitmentSettings = ({
         />
       </div>
 
-      <div className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50">
+      <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-900 dark:text-white">Require Cover Letter</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Make cover letters mandatory for applications</p>
+          <p className="text-sm font-medium">Require Cover Letter</p>
+          <p className="text-sm text-gray-500">Make cover letters mandatory for applications</p>
         </div>
         <Switch 
           checked={settings.requireCoverLetter} 
@@ -60,10 +60,10 @@ export const RecruitmentSettings = ({
         />
       </div>
 
-      <div className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50">
+      <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-900 dark:text-white">Allow Remote Work</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Include remote work options in job postings</p>
+          <p className="text-sm font-medium">Allow Remote Work</p>
+          <p className="text-sm text-gray-500">Include remote work options in job postings</p>
         </div>
         <Switch 
           checked={settings.allowRemote} 
@@ -71,10 +71,10 @@ export const RecruitmentSettings = ({
         />
       </div>
 
-      <div className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50">
+      <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-900 dark:text-white">Application Updates</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Send email updates to applicants about their status</p>
+          <p className="text-sm font-medium">Application Updates</p>
+          <p className="text-sm text-gray-500">Send email updates to applicants about their status</p>
         </div>
         <Switch 
           checked={settings.sendApplicationUpdates} 

@@ -6,7 +6,6 @@ import { GeneralSettings } from "@/components/admin/settings/GeneralSettings";
 import { AppearanceSettings } from "@/components/admin/settings/AppearanceSettings";
 import { NotificationSettings } from "@/components/admin/settings/NotificationSettings";
 import { FeatureManagement } from "@/components/admin/settings/FeatureManagement";
-import { EmployerManagement } from "@/components/admin/settings/EmployerManagement";
 import { AdminSettingsProvider, useAdminSettings } from "@/hooks/use-admin-settings";
 
 const AdminSettingsContent = () => {
@@ -30,9 +29,9 @@ const AdminSettingsContent = () => {
         hasUnsavedChanges={hasUnsavedChanges}
       />
 
-      <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+      <div className="bg-white shadow rounded-lg overflow-hidden">
         <Tabs defaultValue="general" className="w-full">
-          <div className="border-b dark:border-gray-700">
+          <div className="border-b">
             <TabsList className="p-0 bg-transparent border-b">
               <TabsTrigger value="general" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-career-blue">
                 General
@@ -45,9 +44,6 @@ const AdminSettingsContent = () => {
               </TabsTrigger>
               <TabsTrigger value="features" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-career-blue">
                 Features
-              </TabsTrigger>
-              <TabsTrigger value="employers" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-career-blue">
-                Employers
               </TabsTrigger>
             </TabsList>
           </div>
@@ -75,10 +71,6 @@ const AdminSettingsContent = () => {
 
           <TabsContent value="features" className="p-6">
             <FeatureManagement />
-          </TabsContent>
-
-          <TabsContent value="employers" className="p-6">
-            <EmployerManagement />
           </TabsContent>
         </Tabs>
       </div>

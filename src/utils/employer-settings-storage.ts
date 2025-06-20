@@ -1,58 +1,60 @@
 
-import { CompanySettings, RecruitmentSettings, EmployerSettingsState } from "@/types/employer-settings";
+import { EmployerSettingsState } from "@/types/employer-settings";
 
-// Global state for employer settings
-export const globalEmployerSettingsState: EmployerSettingsState = {
+export const defaultEmployerSettings: EmployerSettingsState = {
   company: {
-    companyName: "",
-    companyDescription: "",
-    website: "",
-    industry: "",
-    companySize: "",
-    location: ""
+    companyName: "TechCorp Solutions",
+    companyDescription: "Leading technology solutions provider",
+    website: "https://techcorp.com",
+    industry: "Technology",
+    companySize: "51-100",
+    location: "San Francisco, CA"
   },
   recruitment: {
-    autoScreening: false,
+    autoScreening: true,
     requireCoverLetter: false,
-    allowRemote: false,
+    allowRemote: true,
     sendApplicationUpdates: true
   }
 };
 
-// Listeners for state changes
-export const employerSettingsListeners = new Set<() => void>();
+// Global settings state for real-time sync
+export let globalEmployerSettingsState: EmployerSettingsState = { ...defaultEmployerSettings };
 
-// Initialize from localStorage on load
-const initializeEmployerSettings = () => {
+// Load from localStorage
+export const loadEmployerSettingsFromStorage = () => {
   try {
-    const stored = localStorage.getItem('employer-settings');
+    const stored = localStorage.getItem('visiondrill-employer-settings');
     if (stored) {
       const parsed = JSON.parse(stored);
-      Object.assign(globalEmployerSettingsState, parsed);
+      globalEmployerSettingsState = { ...globalEmployerSettingsState, ...parsed };
     }
   } catch (error) {
-    console.error('Failed to load employer settings from localStorage:', error);
+    console.warn('Failed to load employer settings from storage:', error);
   }
 };
 
 // Save to localStorage
 export const saveEmployerSettingsToStorage = () => {
   try {
-    localStorage.setItem('employer-settings', JSON.stringify(globalEmployerSettingsState));
+    localStorage.setItem('visiondrill-employer-settings', JSON.stringify(globalEmployerSettingsState));
   } catch (error) {
-    console.error('Failed to save employer settings to localStorage:', error);
+    console.warn('Failed to save employer settings to storage:', error);
   }
 };
 
 // Update global state
-export const updateGlobalEmployerSettings = (updates: Partial<EmployerSettingsState>) => {
-  Object.assign(globalEmployerSettingsState, updates);
+export const updateGlobalEmployerSettings = (newState: Partial<EmployerSettingsState>) => {
+  globalEmployerSettingsState = { ...globalEmployerSettingsState, ...newState };
 };
 
-// Notify all listeners
+// Initialize storage
+loadEmployerSettingsFromStorage();
+
+// Listeners for real-time sync
+export const employerSettingsListeners: Set<() => void> = new Set();
+
 export const notifyEmployerSettingsListeners = () => {
   employerSettingsListeners.forEach(listener => listener());
+  saveEmployerSettingsToStorage();
 };
-
-// Initialize on module load
-initializeEmployerSettings();
