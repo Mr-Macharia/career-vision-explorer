@@ -1,4 +1,3 @@
-
 import { useState, useEffect, createContext, useContext } from 'react';
 import { profileService } from '@/services';
 import { Profile } from '@/types/api';
@@ -11,10 +10,16 @@ export const useUserProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        setError(null);
         const data = await profileService.getProfile();
         setProfile(data);
       } catch (err) {
-        setError('Failed to fetch profile');
+        console.error('Profile fetch error:', err);
+        if (err instanceof Error && err.message === 'BACKEND_UNAVAILABLE') {
+          setError('Backend server is not available. Using demo data.');
+        } else {
+          setError('Failed to fetch profile');
+        }
       } finally {
         setIsLoading(false);
       }

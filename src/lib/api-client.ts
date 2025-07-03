@@ -2,6 +2,7 @@
 class ApiClient {
   private baseURL: string;
   private token: string | null = null;
+  private isBackendAvailable: boolean = true;
 
   constructor() {
     this.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
@@ -61,6 +62,13 @@ class ApiClient {
       
       return response.text() as unknown as T;
     } catch (error) {
+      // Check if this is a network error (backend not available)
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        this.isBackendAvailable = false;
+        console.warn(`Backend server not available at ${this.baseURL}. Using fallback behavior.`);
+        throw new Error('BACKEND_UNAVAILABLE');
+      }
+      
       console.error(`API request failed: ${url}`, error);
       throw error;
     }
@@ -107,18 +115,30 @@ class ApiClient {
       headers.Authorization = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${this.baseURL}${endpoint}`, {
-      method: 'POST',
-      headers,
-      body: formData,
-    });
+    try {
+      const response = await fetch(`${this.baseURL}${endpoint}`, {
+        method: 'POST',
+        headers,
+        body: formData,
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || errorData.message || `HTTP ${response.status}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || errorData.message || `HTTP ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new Error('BACKEND_UNAVAILABLE');
+      }
+      throw error;
     }
+  }
 
-    return await response.json();
+  // Check if backend is available
+  getBackendStatus(): boolean {
+    return this.isBackendAvailable;
   }
 }
 
