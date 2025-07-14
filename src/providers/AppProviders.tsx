@@ -6,6 +6,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FreelancersProvider } from "@/hooks/use-freelancers";
 import { MessagingProvider } from "@/hooks/use-messaging";
+import { UserProfileProvider } from "@/hooks/use-user-profile";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,13 +22,15 @@ export const AppProviders = ({ children }: { children: React.ReactNode }) => {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="visiondrillTheme">
         <AuthProvider>
-          <FreelancersProvider>
-            <MessagingProvider>
-              {children}
-              <Toaster />
-              <Sonner />
-            </MessagingProvider>
-          </FreelancersProvider>
+          <UserProfileProvider>
+            <FreelancersProvider>
+              <MessagingProvider>
+                {children}
+                <Toaster />
+                <Sonner />
+              </MessagingProvider>
+            </FreelancersProvider>
+          </UserProfileProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
