@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FreelancersProvider } from "@/hooks/use-freelancers";
 import { MessagingProvider } from "@/hooks/use-messaging";
 import { UserProfileProvider } from "@/hooks/use-user-profile";
+import { LearningPathsProvider } from "@/hooks/use-learning-paths";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,13 +24,15 @@ export const AppProviders = ({ children }: { children: React.ReactNode }) => {
       <ThemeProvider defaultTheme="system" storageKey="visiondrillTheme">
         <AuthProvider>
           <UserProfileProvider>
-            <FreelancersProvider>
-              <MessagingProvider>
-                {children}
-                <Toaster />
-                <Sonner />
-              </MessagingProvider>
-            </FreelancersProvider>
+            <LearningPathsProvider>
+              <FreelancersProvider>
+                <MessagingProvider>
+                  {children}
+                  <Toaster />
+                  <Sonner />
+                </MessagingProvider>
+              </FreelancersProvider>
+            </LearningPathsProvider>
           </UserProfileProvider>
         </AuthProvider>
       </ThemeProvider>
