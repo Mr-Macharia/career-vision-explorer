@@ -1,6 +1,6 @@
 
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import { Suspense } from "react-redux";
+import { Suspense } from "react";
 import { ScrollToTop, PageLoader } from "./routeUtils";
 import { PublicRoutes } from "./PublicRoutes";
 import { AdminRoutes } from "./AdminRoutes";

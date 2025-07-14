@@ -1,5 +1,4 @@
-
-import { Route, Suspense } from "react-router-dom";
+import { Route, Suspense } from "react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { PageLoader } from "./routeUtils";
 import {
