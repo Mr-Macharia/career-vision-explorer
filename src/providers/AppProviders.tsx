@@ -9,6 +9,7 @@ import { MessagingProvider } from "@/hooks/use-messaging";
 import { UserProfileProvider } from "@/hooks/use-user-profile";
 import { LearningPathsProvider } from "@/hooks/use-learning-paths";
 import { CareerPathsProvider } from "@/hooks/use-career-paths";
+import { FeatureProvider } from "@/hooks/use-features";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,21 +24,23 @@ export const AppProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="visiondrillTheme">
-        <AuthProvider>
-          <UserProfileProvider>
-            <LearningPathsProvider>
-              <CareerPathsProvider>
-                <FreelancersProvider>
-                  <MessagingProvider>
-                    {children}
-                    <Toaster />
-                    <Sonner />
-                  </MessagingProvider>
-                </FreelancersProvider>
-              </CareerPathsProvider>
-            </LearningPathsProvider>
-          </UserProfileProvider>
-        </AuthProvider>
+        <FeatureProvider>
+          <AuthProvider>
+            <UserProfileProvider>
+              <LearningPathsProvider>
+                <CareerPathsProvider>
+                  <FreelancersProvider>
+                    <MessagingProvider>
+                      {children}
+                      <Toaster />
+                      <Sonner />
+                    </MessagingProvider>
+                  </FreelancersProvider>
+                </CareerPathsProvider>
+              </LearningPathsProvider>
+            </UserProfileProvider>
+          </AuthProvider>
+        </FeatureProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
