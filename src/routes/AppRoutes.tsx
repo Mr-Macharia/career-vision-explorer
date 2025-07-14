@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 import { useLocation } from "react-router-dom";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -79,7 +80,7 @@ const ScrollToTop = () => {
   return null;
 };
 
-export const AppRoutes = () => {
+const AppRoutesContent = () => {
   return (
     <>
       <ScrollToTop />
@@ -387,5 +388,13 @@ export const AppRoutes = () => {
         } />
       </Routes>
     </>
+  );
+};
+
+export const AppRoutes = () => {
+  return (
+    <BrowserRouter>
+      <AppRoutesContent />
+    </BrowserRouter>
   );
 };
