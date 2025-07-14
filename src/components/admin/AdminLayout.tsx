@@ -1,3 +1,4 @@
+
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, Home, Bell, Settings, LayoutDashboard, Users, UserCheck, User, Briefcase, Award, TrendingUp, Handshake, MessageSquare, FileText, BarChart3, Code } from "lucide-react";
@@ -5,18 +6,17 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { AdminBreadcrumb } from "./AdminBreadcrumb";
-import { Sidebar } from "@/components/ui/sidebar";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-interface DashboardLayoutProps {
+interface AdminLayoutProps {
   children: ReactNode;
-  title: string;
 }
 
-const AdminLayout = ({ children, title }: DashboardLayoutProps) => {
+const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, isAuthenticated, logout } = useAuth();
+  const location = useLocation();
 
   const sidebarItems = [
     {
@@ -108,59 +108,72 @@ const AdminLayout = ({ children, title }: DashboardLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar className="w-64 border-r flex-col space-y-2">
-        <div className="h-16 flex items-center justify-center">
-          <Link to="/" className="text-xl font-bold">
-            Vision Drill
-          </Link>
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-64 border-r bg-card flex flex-col">
+          <div className="h-16 flex items-center justify-center border-b">
+            <Link to="/" className="text-xl font-bold">
+              Vision Drill
+            </Link>
+          </div>
+          <div className="flex-1 space-y-1 p-2">
+            {sidebarItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.href;
+              return (
+                <Link
+                  key={item.title}
+                  to={item.href}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {item.title}
+                </Link>
+              );
+            })}
+          </div>
+          <div className="p-4 border-t">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className="w-full justify-start font-normal"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
-        <div className="flex-1 space-y-1">
-          {sidebarItems.map((item) => (
-            <Sidebar.Item
-              key={item.title}
-              title={item.title}
-              icon={item.icon}
-              href={item.href}
-              active={item.href === window.location.pathname}
-            />
-          ))}
-        </div>
-        <div className="p-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleLogout}
-            className="w-full justify-start font-normal"
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
-          </Button>
-        </div>
-      </Sidebar>
 
-      <div className="ml-64">
-        <nav className="bg-card border-b border-border shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
-              <div className="flex items-center">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                  {title}
-                </h1>
-              </div>
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-muted-foreground">
-                  Welcome, <span className="font-medium text-foreground">{user?.name}</span>
-                </span>
+        {/* Main Content */}
+        <div className="flex-1">
+          <nav className="bg-card border-b border-border shadow-sm">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between h-16">
+                <div className="flex items-center">
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                    Admin Panel
+                  </h1>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-muted-foreground">
+                    Welcome, <span className="font-medium text-foreground">{user?.name}</span>
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        </nav>
+          </nav>
 
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-2">
-            <AdminBreadcrumb />
-            <div className="bg-card rounded-lg shadow-sm border p-6 mt-4">
-              {children}
+          <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div className="px-4 py-2">
+              <AdminBreadcrumb />
+              <div className="bg-card rounded-lg shadow-sm border p-6 mt-4">
+                {children}
+              </div>
             </div>
           </div>
         </div>
