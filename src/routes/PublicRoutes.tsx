@@ -1,4 +1,6 @@
-import { Route, Suspense } from "react";
+
+import { Suspense } from "react";
+import { Route } from "react-router-dom";
 import { PageLoader } from "./routeUtils";
 import {
   Index,

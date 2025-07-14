@@ -1,4 +1,6 @@
+
 import { Route, Suspense } from "react";
+import { Route as RouterRoute } from "react-router-dom";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { PageLoader } from "./routeUtils";
 import {
@@ -21,110 +23,110 @@ import {
 
 export const AdminRoutes = () => (
   <>
-    <Route path="/admin/login" element={
+    <RouterRoute path="/admin/login" element={
       <Suspense fallback={<PageLoader />}>
         <AdminLogin />
       </Suspense>
     } />
-    <Route path="/admin" element={
+    <RouterRoute path="/admin" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminDashboard />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/dashboard" element={
+    <RouterRoute path="/admin/dashboard" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminDashboard />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/users" element={
+    <RouterRoute path="/admin/users" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminUsers />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/freelancers" element={
+    <RouterRoute path="/admin/freelancers" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminFreelancers />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/jobseeker" element={
+    <RouterRoute path="/admin/jobseeker" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminJobseekers />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/profiles" element={
+    <RouterRoute path="/admin/profiles" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminProfiles />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/jobs" element={
+    <RouterRoute path="/admin/jobs" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminJobs />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/skills" element={
+    <RouterRoute path="/admin/skills" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminSkills />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/career-paths" element={
+    <RouterRoute path="/admin/career-paths" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminCareerPaths />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/partners" element={
+    <RouterRoute path="/admin/partners" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminPartners />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/testimonials" element={
+    <RouterRoute path="/admin/testimonials" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminTestimonials />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/content" element={
+    <RouterRoute path="/admin/content" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminContent />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/insights" element={
+    <RouterRoute path="/admin/insights" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminInsights />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/api" element={
+    <RouterRoute path="/admin/api" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminAPI />
         </Suspense>
       </ProtectedRoute>
     } />
-    <Route path="/admin/settings" element={
+    <RouterRoute path="/admin/settings" element={
       <ProtectedRoute requiredRole="admin">
         <Suspense fallback={<PageLoader />}>
           <AdminSettings />
