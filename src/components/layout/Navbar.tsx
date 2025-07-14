@@ -1,244 +1,155 @@
-
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Shield, User, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
 
 const Navbar = () => {
-  const isMobile = useIsMobile();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    toast({
+      title: "Logged Out",
+      description: "You have been successfully logged out",
+    });
+    navigate("/login");
   };
-
-  const getDashboardUrl = () => {
-    if (!user) return "/";
-    switch (user.role) {
-      case 'admin':
-        return '/admin/dashboard';
-      case 'employer':
-        return '/employer/dashboard';
-      case 'jobseeker':
-        return '/jobseeker/dashboard';
-      default:
-        return '/';
-    }
-  };
-
-  const navigation = [
-    { name: "Home", href: "/" },
-    { name: "Jobs", href: "/jobs" },
-    { name: "Career Paths", href: "/career-paths" },
-    { name: "Skills", href: "/skills" },
-    { name: "Insights", href: "/insights" },
-    { name: "Partners", href: "/partners" },
-  ];
-
-  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b border-border/40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                Visiondrill
-              </span>
-            </Link>
-          </div>
+    <nav className="bg-background border-b border-border h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+      <Link to="/" className="text-lg font-bold">
+        VisionDrill
+      </Link>
 
-          {/* Desktop menu */}
-          <div className="hidden md:ml-6 md:flex md:items-center md:space-x-1">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  isActive(item.href)
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
+      <div className="hidden md:flex md:items-center md:space-x-6">
+        <Link to="/jobs" className="text-sm font-medium transition-colors hover:text-primary">
+          Jobs
+        </Link>
+        <Link to="/freelancer/1" className="text-sm font-medium transition-colors hover:text-primary">
+          Freelancers
+        </Link>
+        <Link to="/career-paths" className="text-sm font-medium transition-colors hover:text-primary">
+          Career Paths
+        </Link>
+        <Link to="/insights" className="text-sm font-medium transition-colors hover:text-primary">
+          Insights
+        </Link>
+        <Link to="/partners" className="text-sm font-medium transition-colors hover:text-primary">
+          Partners
+        </Link>
+      </div>
 
-          <div className="hidden md:flex md:items-center md:space-x-2">
-            <ThemeToggle />
+      {isAuthenticated ? (
+        <div className="hidden md:flex md:items-center md:space-x-4">
+          <Link
+            to="/profile"
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            {user?.name}
+          </Link>
+          <Button variant="outline" size="sm" onClick={handleLogout}>
+            Logout
+          </Button>
+        </div>
+      ) : (
+        <div className="hidden md:flex md:items-center md:space-x-4">
+          <Link
+            to="/login"
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            Login
+          </Link>
+          <Link
+            to="/signup"
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            Sign Up
+          </Link>
+        </div>
+      )}
+
+      <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+        <SheetTrigger asChild className="md:hidden">
+          <Button variant="ghost" size="sm">
+            <Menu className="h-4 w-4" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="right" className="sm:max-w-sm">
+          <SheetHeader>
+            <SheetTitle>Menu</SheetTitle>
+            <SheetDescription>
+              Explore VisionDrill and manage your account.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="grid gap-4 py-4">
             <Link
-              to="/admin"
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                location.pathname.startsWith('/admin')
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-              }`}
+              to="/jobs"
+              className="text-sm font-medium transition-colors hover:text-primary block py-2"
             >
-              <Shield className="h-4 w-4" />
-              Admin
+              Jobs
             </Link>
-            
-            {isAuthenticated && user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    {user.name}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate(getDashboardUrl())}>
-                    Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/profile")}>
-                    Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+            <Link
+              to="/career-paths"
+              className="text-sm font-medium transition-colors hover:text-primary block py-2"
+            >
+              Career Paths
+            </Link>
+            <Link
+              to="/insights"
+              className="text-sm font-medium transition-colors hover:text-primary block py-2"
+            >
+              Insights
+            </Link>
+            <Link
+              to="/partners"
+              className="text-sm font-medium transition-colors hover:text-primary block py-2"
+            >
+              Partners
+            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/profile"
+                  className="text-sm font-medium transition-colors hover:text-primary block py-2"
+                >
+                  {user?.name}
+                </Link>
+                <Button variant="outline" size="sm" onClick={handleLogout} className="w-full">
+                  Logout
+                </Button>
+              </>
             ) : (
               <>
-                <Link to="/login">
-                  <Button variant="ghost" size="sm">
-                    Log in
-                  </Button>
+                <Link
+                  to="/login"
+                  className="text-sm font-medium transition-colors hover:text-primary block py-2"
+                >
+                  Login
                 </Link>
-                <Link to="/signup">
-                  <Button size="sm">
-                    Sign up
-                  </Button>
+                <Link
+                  to="/signup"
+                  className="text-sm font-medium transition-colors hover:text-primary block py-2"
+                >
+                  Sign Up
                 </Link>
               </>
             )}
           </div>
-
-          {/* Mobile menu button */}
-          <div className="flex md:hidden items-center space-x-2">
-            <ThemeToggle />
-            <button
-              type="button"
-              onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary transition-colors"
-            >
-              {isMenuOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      {isMenuOpen && isMobile && (
-        <div className="md:hidden bg-background border-t border-border">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`block px-3 py-2 rounded-lg text-base font-medium transition-colors ${
-                  isActive(item.href)
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
-            <div className="pt-4 pb-3 border-t border-border">
-              <div className="flex items-center px-3 space-x-2">
-                <Link
-                  to="/admin"
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-base font-medium transition-colors ${
-                    location.pathname.startsWith('/admin')
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Shield className="h-4 w-4" />
-                  Admin
-                </Link>
-              </div>
-              <div className="mt-3 px-2 space-y-1">
-                {isAuthenticated && user ? (
-                  <>
-                    <div className="px-3 py-2 text-base font-medium text-muted-foreground">
-                      Signed in as {user.name}
-                    </div>
-                    <Link
-                      to={getDashboardUrl()}
-                      className="block px-3 py-2 rounded-lg text-base font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Dashboard
-                    </Link>
-                    <Link
-                      to="/profile"
-                      className="block px-3 py-2 rounded-lg text-base font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Profile
-                    </Link>
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setIsMenuOpen(false);
-                      }}
-                      className="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-red-600 hover:bg-accent transition-colors"
-                    >
-                      Log out
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      to="/login"
-                      className="block px-3 py-2 rounded-lg text-base font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Log in
-                    </Link>
-                    <Link
-                      to="/signup"
-                      className="block px-3 py-2 rounded-lg text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Sign up
-                    </Link>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+        </SheetContent>
+      </Sheet>
     </nav>
   );
 };

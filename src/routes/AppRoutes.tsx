@@ -1,4 +1,3 @@
-
 import { Routes, Route } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 import { useLocation } from "react-router-dom";
@@ -54,6 +53,10 @@ const JobApplicants = lazy(() => import("@/pages/employer/JobApplicants"));
 const AllApplicants = lazy(() => import("@/pages/employer/AllApplicants"));
 const EmployerInterviews = lazy(() => import("@/pages/employer/EmployerInterviews"));
 const InterviewSchedule = lazy(() => import("@/pages/employer/InterviewSchedule"));
+
+const AdminFreelancers = lazy(() => import("@/pages/admin/AdminFreelancers"));
+const FreelancerProfile = lazy(() => import("@/pages/FreelancerProfile"));
+const FreelancerDashboard = lazy(() => import("@/pages/FreelancerDashboard"));
 
 // Lightweight loading component
 const PageLoader = () => (
@@ -172,6 +175,13 @@ export const AppRoutes = () => {
           <ProtectedRoute requiredRole="admin">
             <Suspense fallback={<PageLoader />}>
               <AdminUsers />
+            </Suspense>
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/freelancers" element={
+          <ProtectedRoute requiredRole="admin">
+            <Suspense fallback={<PageLoader />}>
+              <AdminFreelancers />
             </Suspense>
           </ProtectedRoute>
         } />
@@ -355,6 +365,20 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         } />
         
+        {/* Freelancer Routes */}
+        <Route path="/freelancer/dashboard" element={
+          <ProtectedRoute>
+            <Suspense fallback={<PageLoader />}>
+              <FreelancerDashboard />
+            </Suspense>
+          </ProtectedRoute>
+        } />
+        <Route path="/freelancer/:id" element={
+          <Suspense fallback={<PageLoader />}>
+            <FreelancerProfile />
+          </Suspense>
+        } />
+
         {/* Catch-all route for 404 */}
         <Route path="*" element={
           <Suspense fallback={<PageLoader />}>
