@@ -51,6 +51,39 @@ export const apiEndpoints = [
     ]
   },
   {
+    category: "Theme API",
+    endpoints: [
+      { 
+        method: "GET", 
+        path: "/api/theme", 
+        description: "Get current theme settings (light mode only)",
+        example: `const theme = await ThemeApi.getTheme();`,
+        response: `{
+  "theme": "light",
+  "customization": {
+    "primaryColor": "#3b82f6",
+    "secondaryColor": "#64748b"
+  }
+}`
+      },
+      { 
+        method: "PUT", 
+        path: "/api/theme/customize", 
+        description: "Update theme customization (colors only)",
+        params: ["primaryColor", "secondaryColor", "accentColor"],
+        example: `const result = await ThemeApi.updateCustomization({
+  primaryColor: '#3b82f6',
+  secondaryColor: '#64748b',
+  accentColor: '#10b981'
+});`,
+        response: `{
+  "success": true,
+  "message": "Theme customization updated"
+}`
+      },
+    ]
+  },
+  {
     category: "Jobs API",
     endpoints: [
       { 

@@ -23,7 +23,7 @@ const queryClient = new QueryClient({
 export const AppProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system" storageKey="visiondrillTheme">
+      <ThemeProvider defaultTheme="light" storageKey="visiondrillTheme">
         <FeatureProvider>
           <AuthProvider>
             <UserProfileProvider>
