@@ -1,6 +1,6 @@
 
-import { Route, Suspense } from "react";
-import { Route as RouterRoute } from "react-router-dom";
+import { Suspense } from "react";
+import { Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { PageLoader } from "./routeUtils";
 import {
@@ -21,117 +21,115 @@ import {
   AdminSettings
 } from "./lazyImports";
 
-export const AdminRoutes = () => (
-  <>
-    <RouterRoute path="/admin/login" element={
+export const adminRoutes = [
+  <Route key="admin-login" path="/admin/login" element={
+    <Suspense fallback={<PageLoader />}>
+      <AdminLogin />
+    </Suspense>
+  } />,
+  <Route key="admin-root" path="/admin" element={
+    <ProtectedRoute requiredRole="admin">
       <Suspense fallback={<PageLoader />}>
-        <AdminLogin />
+        <AdminDashboard />
       </Suspense>
-    } />
-    <RouterRoute path="/admin" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminDashboard />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/dashboard" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminDashboard />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/users" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminUsers />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/freelancers" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminFreelancers />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/jobseeker" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminJobseekers />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/profiles" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminProfiles />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/jobs" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminJobs />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/skills" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminSkills />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/career-paths" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminCareerPaths />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/partners" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminPartners />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/testimonials" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminTestimonials />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/content" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminContent />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/insights" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminInsights />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/api" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminAPI />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-    <RouterRoute path="/admin/settings" element={
-      <ProtectedRoute requiredRole="admin">
-        <Suspense fallback={<PageLoader />}>
-          <AdminSettings />
-        </Suspense>
-      </ProtectedRoute>
-    } />
-  </>
-);
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-dashboard" path="/admin/dashboard" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminDashboard />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-users" path="/admin/users" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminUsers />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-freelancers" path="/admin/freelancers" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminFreelancers />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-jobseeker" path="/admin/jobseeker" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminJobseekers />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-profiles" path="/admin/profiles" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminProfiles />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-jobs" path="/admin/jobs" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminJobs />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-skills" path="/admin/skills" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminSkills />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-career-paths" path="/admin/career-paths" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminCareerPaths />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-partners" path="/admin/partners" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminPartners />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-testimonials" path="/admin/testimonials" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminTestimonials />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-content" path="/admin/content" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminContent />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-insights" path="/admin/insights" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminInsights />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-api" path="/admin/api" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminAPI />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-settings" path="/admin/settings" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminSettings />
+      </Suspense>
+    </ProtectedRoute>
+  } />
+];

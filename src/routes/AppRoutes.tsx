@@ -2,10 +2,10 @@
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { Suspense } from "react";
 import { ScrollToTop, PageLoader } from "./routeUtils";
-import { PublicRoutes } from "./PublicRoutes";
-import { AdminRoutes } from "./AdminRoutes";
-import { EmployerRoutes } from "./EmployerRoutes";
-import { JobSeekerRoutes } from "./JobSeekerRoutes";
+import { publicRoutes } from "./PublicRoutes";
+import { adminRoutes } from "./AdminRoutes";
+import { employerRoutes } from "./EmployerRoutes";
+import { jobSeekerRoutes } from "./JobSeekerRoutes";
 import { NotFound } from "./lazyImports";
 
 const AppRoutesContent = () => {
@@ -14,16 +14,16 @@ const AppRoutesContent = () => {
       <ScrollToTop />
       <Routes>
         {/* Public Routes */}
-        <PublicRoutes />
+        {publicRoutes}
         
         {/* Admin Routes */}
-        <AdminRoutes />
+        {adminRoutes}
 
         {/* Employer Routes */}
-        <EmployerRoutes />
+        {employerRoutes}
 
         {/* Job Seeker Protected Routes */}
-        <JobSeekerRoutes />
+        {jobSeekerRoutes}
 
         {/* Catch-all route for 404 */}
         <Route path="*" element={
