@@ -1,7 +1,7 @@
 
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Home, Bell, Settings, LayoutDashboard, Users, UserCheck, User, Briefcase, Award, TrendingUp, Handshake, MessageSquare, FileText, BarChart3, Code } from "lucide-react";
+import { LogOut, Home, Bell, Settings, LayoutDashboard, Users, UserCheck, User, Briefcase, Award, TrendingUp, Handshake, MessageSquare, FileText, BarChart3, Code, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
@@ -79,6 +79,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       title: "Insights",
       icon: BarChart3,
       href: "/admin/insights"
+    },
+    {
+      title: "Interviews",
+      icon: Video,
+      href: "/admin/interviews"
     },
     {
       title: "API",

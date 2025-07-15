@@ -9,7 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Star, MapPin, Calendar, MessageCircle, Check } from "lucide-react";
+import { Star, MapPin, Calendar, MessageCircle, Check, Video } from "lucide-react";
+import { VideoCallDialog } from "@/components/freelancer/VideoCallDialog";
 import {
   Dialog,
   DialogContent,
@@ -91,6 +92,7 @@ const FreelancerProfile = () => {
                 </div>
                 
                 <div className="flex gap-2">
+                  <VideoCallDialog freelancer={freelancer} selectedTier={selectedTier} />
                   <Dialog open={isMessageDialogOpen} onOpenChange={setIsMessageDialogOpen}>
                     <DialogTrigger asChild>
                       <Button>

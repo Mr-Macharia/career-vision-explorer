@@ -16,7 +16,8 @@ import {
   FAQ,
   Privacy,
   Terms,
-  FreelancerProfile
+  FreelancerProfile,
+  VideoMeeting
 } from "./lazyImports";
 
 export const publicRoutes = [
@@ -83,6 +84,11 @@ export const publicRoutes = [
   <Route key="terms" path="/terms" element={
     <Suspense fallback={<PageLoader />}>
       <Terms />
+    </Suspense>
+  } />,
+  <Route key="video-meeting" path="/meeting/:interviewId" element={
+    <Suspense fallback={<PageLoader />}>
+      <VideoMeeting />
     </Suspense>
   } />,
   <Route key="freelancer-profile" path="/freelancer/:id" element={

@@ -45,3 +45,21 @@ export interface Message {
   timestamp: string;
   isRead: boolean;
 }
+
+export interface FreelancerInterview {
+  id: string;
+  freelancerId: string;
+  freelancerName: string;
+  clientId: string;
+  clientName: string;
+  scheduledDate: string;
+  scheduledTime: string;
+  duration: string;
+  status: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
+  type: "Video" | "Phone" | "In-person";
+  meetingLink?: string;
+  notes?: string;
+  createdAt: string;
+  tier?: string;
+  isMonitoredByAdmin?: boolean;
+}

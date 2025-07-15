@@ -7,6 +7,7 @@ export const Signup = lazy(() => import("@/pages/Signup"));
 export const Jobs = lazy(() => import("@/pages/Jobs"));
 export const JobDetails = lazy(() => import("@/pages/JobDetails"));
 export const PublicProfile = lazy(() => import("@/pages/PublicProfile"));
+export const VideoMeeting = lazy(() => import("@/pages/VideoMeeting"));
 export const NotFound = lazy(() => import("@/pages/NotFound"));
 export const Profile = lazy(() => import("@/pages/Profile"));
 export const Skills = lazy(() => import("@/pages/Skills"));
@@ -43,6 +44,7 @@ export const AdminTestimonials = lazy(() => import("@/pages/admin/AdminTestimoni
 export const AdminContent = lazy(() => import("@/pages/admin/AdminContent"));
 export const AdminInsights = lazy(() => import("@/pages/admin/AdminInsights"));
 export const AdminSettings = lazy(() => import("@/pages/admin/AdminSettings"));
+export const AdminInterviews = lazy(() => import("@/pages/admin/AdminInterviews"));
 export const AdminProfiles = lazy(() => import("@/pages/admin/AdminProfiles"));
 export const EmployerJobs = lazy(() => import("@/pages/employer/EmployerJobs"));
 export const JobApplicants = lazy(() => import("@/pages/employer/JobApplicants"));

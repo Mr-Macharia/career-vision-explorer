@@ -18,7 +18,8 @@ import {
   AdminContent,
   AdminInsights,
   AdminAPI,
-  AdminSettings
+  AdminSettings,
+  AdminInterviews
 } from "./lazyImports";
 
 export const adminRoutes = [
@@ -129,6 +130,13 @@ export const adminRoutes = [
     <ProtectedRoute requiredRole="admin">
       <Suspense fallback={<PageLoader />}>
         <AdminSettings />
+      </Suspense>
+    </ProtectedRoute>
+  } />,
+  <Route key="admin-interviews" path="/admin/interviews" element={
+    <ProtectedRoute requiredRole="admin">
+      <Suspense fallback={<PageLoader />}>
+        <AdminInterviews />
       </Suspense>
     </ProtectedRoute>
   } />
