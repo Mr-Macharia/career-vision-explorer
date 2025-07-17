@@ -1,21 +1,18 @@
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useFreelancers } from "@/hooks/use-freelancers";
-import { useToast } from "@/hooks/use-toast";
 import { FreelancerProfile } from "@/types/freelancer";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, Eye, Edit, Trash2, Plus, Search } from "lucide-react";
+import { Star, Eye, Edit, Trash2, Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -27,20 +24,68 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { FreelancerFormDialog } from "@/components/admin/freelancers/FreelancerFormDialog";
+import { FreelancerStatsCards } from "@/components/admin/freelancers/FreelancerStatsCards";
+import { FreelancerFilters } from "@/components/admin/freelancers/FreelancerFilters";
+import { toast } from "@/components/ui/sonner";
 
 const AdminFreelancers = () => {
-  const { toast } = useToast();
-  const { freelancers, updateFreelancer, deleteFreelancer, isLoading } = useFreelancers();
+  const { freelancers, updateFreelancer, deleteFreelancer } = useFreelancers();
+  
+  // Filter states
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [skillsFilter, setSkillsFilter] = useState<string[]>([]);
+  const [ratingFilter, setRatingFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("name");
+  
+  // Dialog states
   const [selectedFreelancer, setSelectedFreelancer] = useState<FreelancerProfile | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const filteredFreelancers = freelancers.filter((freelancer) =>
-    freelancer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    freelancer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    freelancer.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredAndSortedFreelancers = useMemo(() => {
+    let filtered = freelancers.filter((freelancer) => {
+      // Search filter
+      const matchesSearch = !searchQuery || 
+        freelancer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        freelancer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        freelancer.title.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Status filter
+      const matchesStatus = statusFilter === "all" || 
+        (statusFilter === "active" && freelancer.isActive) ||
+        (statusFilter === "inactive" && !freelancer.isActive);
+
+      // Skills filter
+      const matchesSkills = skillsFilter.length === 0 ||
+        skillsFilter.some(skill => freelancer.skills.includes(skill));
+
+      // Rating filter
+      const matchesRating = ratingFilter === "all" ||
+        freelancer.rating >= parseFloat(ratingFilter);
+
+      return matchesSearch && matchesStatus && matchesSkills && matchesRating;
+    });
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "rating":
+          return b.rating - a.rating;
+        case "projects":
+          return b.completedProjects - a.completedProjects;
+        case "joinDate":
+          return new Date(b.joinDate).getTime() - new Date(a.joinDate).getTime();
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  }, [freelancers, searchQuery, statusFilter, skillsFilter, ratingFilter, sortBy]);
 
   const handleViewClick = (freelancer: FreelancerProfile) => {
     setSelectedFreelancer(freelancer);
@@ -58,26 +103,29 @@ const AdminFreelancers = () => {
     const success = await deleteFreelancer(selectedFreelancer.id);
     if (success) {
       setIsDeleteDialogOpen(false);
-      toast({
-        title: "Success",
-        description: "Freelancer deleted successfully",
-      });
+      toast.success("Freelancer deleted successfully");
     }
   };
 
   const handleToggleStatus = async (freelancer: FreelancerProfile) => {
     const success = await updateFreelancer(freelancer.id, { isActive: !freelancer.isActive });
     if (success) {
-      toast({
-        title: "Success",
-        description: `Freelancer ${freelancer.isActive ? 'deactivated' : 'activated'}`,
-      });
+      toast.success(`Freelancer ${freelancer.isActive ? 'deactivated' : 'activated'}`);
     }
+  };
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setStatusFilter("all");
+    setSkillsFilter([]);
+    setRatingFilter("all");
+    setSortBy("name");
   };
 
   return (
     <AdminLayout>
       <div className="space-y-6">
+        {/* Header */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Freelancer Management</h1>
@@ -85,22 +133,37 @@ const AdminFreelancers = () => {
               Manage freelancer profiles, portfolios, and services
             </p>
           </div>
+          <FreelancerFormDialog mode="create" />
         </div>
 
-        <div className="flex gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search freelancers..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8"
-            />
-          </div>
+        {/* Stats */}
+        <FreelancerStatsCards />
+
+        {/* Filters */}
+        <FreelancerFilters
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          statusFilter={statusFilter}
+          onStatusFilterChange={setStatusFilter}
+          skillsFilter={skillsFilter}
+          onSkillsFilterChange={setSkillsFilter}
+          ratingFilter={ratingFilter}
+          onRatingFilterChange={setRatingFilter}
+          sortBy={sortBy}
+          onSortByChange={setSortBy}
+          onClearFilters={clearFilters}
+        />
+
+        {/* Results */}
+        <div className="flex justify-between items-center">
+          <p className="text-sm text-muted-foreground">
+            Showing {filteredAndSortedFreelancers.length} of {freelancers.length} freelancers
+          </p>
         </div>
 
+        {/* Freelancers Grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredFreelancers.map((freelancer) => (
+          {filteredAndSortedFreelancers.map((freelancer) => (
             <Card key={freelancer.id} className="hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex items-start gap-3">
@@ -137,9 +200,14 @@ const AdminFreelancers = () => {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <Badge variant={freelancer.isActive ? "default" : "secondary"}>
-                      {freelancer.isActive ? "Active" : "Inactive"}
-                    </Badge>
+                    <div className="flex flex-col gap-1">
+                      <Badge variant={freelancer.isActive ? "default" : "secondary"}>
+                        {freelancer.isActive ? "Active" : "Inactive"}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">
+                        ${freelancer.hourlyRate}/hr
+                      </span>
+                    </div>
                     <div className="flex gap-1">
                       <Button
                         variant="ghost"
@@ -148,6 +216,15 @@ const AdminFreelancers = () => {
                       >
                         {freelancer.isActive ? "Deactivate" : "Activate"}
                       </Button>
+                      <FreelancerFormDialog 
+                        mode="edit" 
+                        freelancer={freelancer}
+                        trigger={
+                          <Button variant="ghost" size="sm">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
                       <Button
                         variant="ghost"
                         size="sm"
@@ -169,6 +246,18 @@ const AdminFreelancers = () => {
             </Card>
           ))}
         </div>
+
+        {/* No Results */}
+        {filteredAndSortedFreelancers.length === 0 && (
+          <Card>
+            <CardContent className="text-center py-8">
+              <p className="text-muted-foreground">No freelancers found matching your criteria.</p>
+              <Button variant="outline" onClick={clearFilters} className="mt-2">
+                Clear Filters
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         {/* View Dialog */}
         <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>

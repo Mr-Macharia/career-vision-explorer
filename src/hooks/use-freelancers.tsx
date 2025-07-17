@@ -26,6 +26,8 @@ const mockFreelancers: FreelancerProfile[] = [
     description: "I create beautiful, user-friendly designs that convert visitors into customers.",
     skills: ["UI/UX Design", "React", "Figma", "Adobe Creative Suite"],
     profileImage: "/placeholder.svg",
+    location: "San Francisco, CA",
+    hourlyRate: 85,
     rating: 4.9,
     completedProjects: 127,
     isActive: true,

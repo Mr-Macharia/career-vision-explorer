@@ -8,6 +8,8 @@ export interface FreelancerProfile {
   description: string;
   skills: string[];
   profileImage?: string;
+  location?: string;
+  hourlyRate: number;
   rating: number;
   completedProjects: number;
   isActive: boolean;
