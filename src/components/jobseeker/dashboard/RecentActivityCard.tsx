@@ -31,8 +31,8 @@ export const RecentActivityCard = () => {
       <CardContent className="space-y-4">
         <div className="space-y-3">
           {activities.map((activity, index) => (
-            <div key={index} className={`flex items-center gap-3 p-3 bg-${activity.color}-50 rounded-lg`}>
-              <div className={`h-2 w-2 bg-${activity.color}-500 rounded-full`}></div>
+            <div key={index} className="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-100">
+              <div className="h-2 w-2 bg-blue-500 rounded-full animate-pulse"></div>
               <span className="text-sm text-gray-700">{activity.text}</span>
             </div>
           ))}
