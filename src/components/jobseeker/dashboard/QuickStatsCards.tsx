@@ -2,32 +2,51 @@
 import React from "react";
 import { Briefcase, Eye, Calendar, Star, MessageCircle } from "lucide-react";
 import { StatCard } from "./StatCard";
+import { useNavigate } from "react-router-dom";
 
 export const QuickStatsCards = () => {
+  const navigate = useNavigate();
+
   const stats = [
     {
       icon: Briefcase,
       value: "12",
       label: "Applications",
-      gradient: "from-blue-500 to-blue-600"
+      gradient: "bg-primary",
+      onClick: () => {
+        // Navigate to applications tab in dashboard
+        const event = new CustomEvent('switchTab', { detail: 'applications' });
+        window.dispatchEvent(event);
+      }
     },
     {
       icon: Calendar,
       value: "2",
       label: "Interviews",
-      gradient: "from-purple-500 to-purple-600"
+      gradient: "bg-purple-500",
+      onClick: () => {
+        // Navigate to interviews tab in dashboard
+        const event = new CustomEvent('switchTab', { detail: 'interviews' });
+        window.dispatchEvent(event);
+      }
     },
     {
       icon: Eye,
       value: "24",
       label: "Profile Views",
-      gradient: "from-green-500 to-green-600"
+      gradient: "bg-green-500",
+      onClick: () => navigate("/profile")
     },
     {
       icon: MessageCircle,
       value: "5",
       label: "Messages",
-      gradient: "from-orange-500 to-orange-600"
+      gradient: "bg-orange-500",
+      onClick: () => {
+        // Navigate to messages tab in dashboard
+        const event = new CustomEvent('switchTab', { detail: 'messages' });
+        window.dispatchEvent(event);
+      }
     }
   ];
 
@@ -40,6 +59,7 @@ export const QuickStatsCards = () => {
           value={stat.value}
           label={stat.label}
           gradient={stat.gradient}
+          onClick={stat.onClick}
         />
       ))}
     </div>

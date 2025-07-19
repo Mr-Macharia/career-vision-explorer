@@ -5,15 +5,27 @@ import { MessagesTab } from "./MessagesTab";
 import { UpcomingInterviewsTab } from "./UpcomingInterviewsTab";
 import { ApplicationUpdatesTab } from "./ApplicationUpdatesTab";
 import { LearningPathsTab } from "./LearningPathsTab";
+import { useState, useEffect } from "react";
 
 interface DashboardTabsProps {
   onViewApplication: (application: any) => void;
 }
 
 export const DashboardTabs = ({ onViewApplication }: DashboardTabsProps) => {
+  const [activeTab, setActiveTab] = useState("jobs");
+
+  useEffect(() => {
+    const handleTabSwitch = (event: CustomEvent) => {
+      setActiveTab(event.detail);
+    };
+
+    window.addEventListener('switchTab' as any, handleTabSwitch);
+    return () => window.removeEventListener('switchTab' as any, handleTabSwitch);
+  }, []);
+
   return (
-    <Tabs defaultValue="jobs" className="space-y-8">
-      <TabsList className="grid w-full grid-cols-5 bg-white/60 backdrop-blur-sm rounded-xl border border-gray-200 p-1">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+      <TabsList className="grid w-full grid-cols-5 bg-card/60 backdrop-blur-sm rounded-xl border border-border p-1">
         <TabsTrigger value="jobs" className="rounded-lg font-medium">Jobs</TabsTrigger>
         <TabsTrigger value="messages" className="rounded-lg font-medium">Messages</TabsTrigger>
         <TabsTrigger value="interviews" className="rounded-lg font-medium">Upcoming Interviews</TabsTrigger>
