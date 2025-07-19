@@ -11,6 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Plus, Edit, Trash2, DollarSign, Star, Users, Briefcase } from "lucide-react";
+import { QuickStatsCards } from "@/components/jobseeker/dashboard/QuickStatsCards";
+import { DashboardTabs } from "@/components/jobseeker/dashboard/DashboardTabs";
+import { DashboardBackground } from "@/components/jobseeker/dashboard/DashboardBackground";
+import { DashboardHeader } from "@/components/jobseeker/dashboard/DashboardHeader";
+import { ApplicationDetailsDialog } from "@/components/jobseeker/ApplicationDetailsDialog";
 import {
   Dialog,
   DialogContent,
@@ -33,6 +38,7 @@ const FreelancerDashboard = () => {
   const { freelancers, getFreelancerById, addPortfolioItem, addPricingTier } = useFreelancers();
   const [isPortfolioDialogOpen, setIsPortfolioDialogOpen] = useState(false);
   const [isPricingDialogOpen, setIsPricingDialogOpen] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState<any>(null);
   
   // Portfolio form state
   const [portfolioForm, setPortfolioForm] = useState({
@@ -151,106 +157,31 @@ const FreelancerDashboard = () => {
 
   return (
     <Layout>
-      <div className="container py-8 max-w-7xl">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold">Freelancer Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back, {freelancerProfile.name}!</p>
-          </div>
-          <Badge variant={freelancerProfile.isActive ? "default" : "secondary"}>
-            {freelancerProfile.isActive ? "Active" : "Inactive"}
-          </Badge>
-        </div>
+      <DashboardBackground />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <DashboardHeader />
+        
+        <QuickStatsCards />
+        
+        <DashboardTabs onViewApplication={setSelectedApplication} />
+        
+        {selectedApplication && (
+          <ApplicationDetailsDialog
+            application={selectedApplication}
+            open={!!selectedApplication}
+            onOpenChange={(open) => !open && setSelectedApplication(null)}
+          />
+        )}
 
-        {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-          {stats.map((stat) => (
-            <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                <stat.icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">
-                  <span className="text-green-600">{stat.change}</span> from last month
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Main Content */}
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
-            <TabsTrigger value="pricing">Pricing</TabsTrigger>
-            <TabsTrigger value="messages">Messages</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="overview">
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Activity</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-2 w-2 bg-green-500 rounded-full" />
-                      <div className="flex-1">
-                        <p className="text-sm">New message from John Doe</p>
-                        <p className="text-xs text-muted-foreground">2 hours ago</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="h-2 w-2 bg-blue-500 rounded-full" />
-                      <div className="flex-1">
-                        <p className="text-sm">Project completed: Website Design</p>
-                        <p className="text-xs text-muted-foreground">1 day ago</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="h-2 w-2 bg-yellow-500 rounded-full" />
-                      <div className="flex-1">
-                        <p className="text-sm">New review received (5 stars)</p>
-                        <p className="text-xs text-muted-foreground">3 days ago</p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Profile Stats</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Profile Views</span>
-                      <span className="font-medium">142</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Portfolio Items</span>
-                      <span className="font-medium">{freelancerProfile.portfolio.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Pricing Tiers</span>
-                      <span className="font-medium">{freelancerProfile.pricing.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Response Rate</span>
-                      <span className="font-medium">98%</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="portfolio">
+        {/* Legacy Content - Portfolio and Pricing Management */}
+        <div className="mt-12 space-y-6">
+          <Tabs defaultValue="portfolio" className="space-y-6">
+            <TabsList className="bg-card/60 backdrop-blur-sm rounded-xl border border-border p-1">
+              <TabsTrigger value="portfolio" className="rounded-lg font-medium">Portfolio</TabsTrigger>
+              <TabsTrigger value="pricing" className="rounded-lg font-medium">Pricing</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="portfolio">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">Portfolio Management</h2>
               <Dialog open={isPortfolioDialogOpen} onOpenChange={setIsPortfolioDialogOpen}>
@@ -472,21 +403,8 @@ const FreelancerDashboard = () => {
               ))}
             </div>
           </TabsContent>
-          
-          <TabsContent value="messages">
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-center py-8">
-                  <div className="h-12 w-12 mx-auto bg-muted rounded-full flex items-center justify-center mb-4">
-                    <Users className="h-6 w-6 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-medium mb-2">No messages yet</h3>
-                  <p className="text-muted-foreground">When clients contact you, their messages will appear here.</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+          </Tabs>
+        </div>
       </div>
     </Layout>
   );
