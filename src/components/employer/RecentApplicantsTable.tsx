@@ -57,58 +57,56 @@ export const RecentApplicantsTable = () => {
   };
 
   return (
-    <div className="space-y-4">
-      {/* Search and Actions Header */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">Recent Applications</h3>
-          <p className="text-sm text-gray-500 mt-1">
-            View and manage the latest candidate applications
+    <div className="space-y-3">
+      {/* Compact Header */}
+      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+        <div className="min-w-0">
+          <h3 className="text-base sm:text-lg font-semibold text-foreground">Recent Applications</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
+            Latest candidate applications
           </p>
         </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-64">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="relative flex-1 sm:w-48">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search applicants..."
-              className="pl-10 bg-gray-50 border-gray-200 focus:bg-white transition-colors"
+              placeholder="Search..."
+              className="pl-9 h-8 text-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           <Button 
             variant="outline" 
+            size="sm"
             onClick={handleViewAllApplicants}
-            className="whitespace-nowrap hover:bg-blue-50 border-blue-200 text-blue-700"
+            className="whitespace-nowrap h-8 px-3"
           >
-            <ExternalLink className="h-4 w-4 mr-2" />
+            <ExternalLink className="h-3 w-3 mr-1" />
             View All
           </Button>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      {/* Compact Table */}
+      <div className="bg-card rounded-lg border border-border overflow-hidden">
         <Table>
-          <TableHeader className="bg-gray-50">
-            <TableRow className="border-gray-200">
-              <TableHead className="font-semibold text-gray-900">Candidate</TableHead>
-              <TableHead className="font-semibold text-gray-900">Position</TableHead>
-              <TableHead className="font-semibold text-gray-900">Applied</TableHead>
-              <TableHead className="font-semibold text-gray-900">Match Score</TableHead>
-              <TableHead className="font-semibold text-gray-900">Status</TableHead>
-              <TableHead className="font-semibold text-gray-900 text-right">Actions</TableHead>
+          <TableHeader className="bg-muted/50">
+            <TableRow>
+              <TableHead className="font-medium text-foreground text-sm">Candidate</TableHead>
+              <TableHead className="font-medium text-foreground text-sm hidden sm:table-cell">Position</TableHead>
+              <TableHead className="font-medium text-foreground text-sm hidden md:table-cell">Applied</TableHead>
+              <TableHead className="font-medium text-foreground text-sm text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {recentApplicants.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
                   <div className="flex flex-col items-center">
-                    <Users className="h-12 w-12 text-gray-300 mb-2" />
-                    <p>No recent applicants found</p>
-                    <p className="text-sm">Applications will appear here as they come in</p>
+                    <Users className="h-8 w-8 text-muted-foreground mb-2" />
+                    <p className="text-sm">No recent applicants</p>
                   </div>
                 </TableCell>
               </TableRow>
@@ -120,54 +118,44 @@ export const RecentApplicantsTable = () => {
                   onStatusChange={updateApplicantStatus}
                   onScheduleInterview={handleScheduleInterview}
                 >
-                  <TableRow className="cursor-pointer hover:bg-blue-50/50 transition-colors border-gray-100">
+                  <TableRow className="cursor-pointer hover:bg-muted/50 transition-colors">
                     <TableCell>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium text-sm">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center text-primary-foreground font-medium text-xs sm:text-sm">
                           {applicant.name.charAt(0)}
                         </div>
-                        <div>
-                          <p className="font-medium text-gray-900">{applicant.name}</p>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-foreground text-sm truncate">{applicant.name}</p>
+                          <p className="text-xs text-muted-foreground sm:hidden truncate">{applicant.position}</p>
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <span className="text-gray-700">{applicant.position}</span>
+                    <TableCell className="hidden sm:table-cell">
+                      <span className="text-foreground text-sm">{applicant.position}</span>
                     </TableCell>
-                    <TableCell>
-                      <span className="text-gray-600 text-sm">{applicant.appliedTime}</span>
-                    </TableCell>
-                    <TableCell>
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getScoreBadgeColor(applicant.matchScore)}`}>
-                        {applicant.matchScore}% match
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusBadgeColor(applicant.status)}`}>
-                        {applicant.status}
-                      </span>
+                    <TableCell className="hidden md:table-cell">
+                      <span className="text-muted-foreground text-xs">{applicant.appliedTime}</span>
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-end gap-1">
                         <Button 
                           size="sm" 
-                          variant="outline"
-                          className="h-8 w-8 p-0 hover:bg-blue-50 border-blue-200"
+                          variant="ghost"
+                          className="h-6 w-6 p-0"
                         >
-                          <Eye className="h-3 w-3 text-blue-600" />
+                          <Eye className="h-3 w-3" />
                         </Button>
                         {applicant.status === "Reviewing" && (
                           <Button 
                             size="sm" 
-                            variant="outline"
+                            variant="ghost"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleScheduleInterview(applicant.id);
                             }}
-                            className="h-8 px-3 text-xs hover:bg-green-50 border-green-200 text-green-700"
+                            className="h-6 px-2 text-xs"
                           >
-                            <Calendar className="h-3 w-3 mr-1" />
-                            Interview
+                            <Calendar className="h-3 w-3" />
                           </Button>
                         )}
                       </div>
